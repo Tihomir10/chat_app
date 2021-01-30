@@ -1,15 +1,12 @@
-function Form() {
+function Form(props) {
   return (
       <form>
         <div className="form-group">
-          <label>Email address</label>
-          <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+          <label>Username</label>
+          <input type="text" className="form-control" onChange={props.handleChange} />
+          <span>{props.inputError}</span>
         </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" className="form-control" id="exampleInputPassword1" />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <button type="submit" className="btn btn-primary" onClick={props.sendUsername} >Join</button>
       </form>
   )
 }
