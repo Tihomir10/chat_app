@@ -16,20 +16,22 @@ db.once('open', function() {
 });
 
 io.on('connection', socket => {
-  socket.on('message', (msg) => {
-    console.log(msg);
-  });
   socket.on('disconnect', () => {
     console.log('disconnected')
   });
-  socket.on('newUser', (username) => {
+  socket.on('newUser', async (username) => {
+    var users =await User.find({});
     var user = new User({
       name: username,
       userID: socket.id
     })
-    user.save(function (err) {
+    await user.save(function (err) {
       if (err) return err;
     })
+    socket.emit('loggedUser', users)
+  });
+  socket.on('private message', (msg) => {
+    socket.to(msg.userid).emit('message', msg.message)
   });
 });
 
