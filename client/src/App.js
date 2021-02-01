@@ -7,88 +7,59 @@ import Users from './components/Users';
 const socket = io('http://localhost:4001', { transports: ['websocket']});
 
 function App() {
-  const [ username, setUsername ] = useState();
+  const [ user, setUser ] = useState({inputError: ''});
 
-  const [ inputError, setInputError ] = useState('');
+  const [ sentMessage, setSentMessage ]  = useState({});
 
   const [ submit, setSubmit ] = useState(false);
 
-  const [ users, setUsers ] = useState({});
+  const [ listOfUsers, setListOfUsers ] = useState({});
 
-  const [ sendMsg, setSendMsg ] = useState(false);
-
-  const [ message, setMessage ] = useState({});
-
-  const [ receivedMessage, setReceivedMessage ] = useState('')
-
-  socket.on('connect', () => {
-    console.log('Connected')
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('disconnected')
-  })
+  const [ receivedMessage, setReceivedMessage ] = useState({username: '', message: ''});
 
 
   //Receive list of users
   socket.on('loggedUser', loggedUsers => {
-    setUsers(loggedUsers);
+    setListOfUsers(loggedUsers);
     setSubmit(true);
   });
 
 
   //Receiving a private message
   socket.on('message', msg => {
+    console.log(msg)
     setReceivedMessage(msg)
   });
 
   //Sending a private message
-  if (sendMsg) {
-    socket.emit('private message', message);
-    setSendMsg(false);
-  }
-
-
-
-  //Handling sending a private message
-  const handleMessage = (event) => {
-    setMessage({...message,
-      [event.target.name]: event.target.value
-    })
-  }
-
   const handleSentMessage = (event) => {
-    event.preventDefault()
-    setSendMsg(true)
+    socket.emit('private message', sentMessage);
+    event.preventDefault();
   }
 
-
-
-
-  //Submiting a username
+  //Create user 
   const handleChange = (event) => {
-    if (event.target.value.length < 4) {
-      setInputError('Username must be 4 characters or longer');
-    } else {
-      setUsername(event.target.value);
-      setInputError('');
+    if (event.target.name === 'username' && event.target.value.length < 4) {
+      setUser({inputError: 'Username must be 4 characters or longer'});
+    } else if (event.target.name === 'username') {
+      setUser({inputError: '', [event.target.name]: event.target.value});
     }
+    setSentMessage({...sentMessage, [event.target.name]: event.target.value})
   }
 
   const sendUsername = (event) => {
-    if (username) {
-      socket.emit('newUser', username);
+    if (user.username) {
+      socket.emit('newUser', user.username);
     }
     event.preventDefault();
   }
 
-
-  //Display users if username is submited
+  //Display users if user is submited
   if (submit) {
     return (
       <Users 
-        users={users} 
-        handleMessage={handleMessage}
+        users={listOfUsers} 
+        handleChange={handleChange}
         receivedMessage={receivedMessage}
         handleSentMessage={handleSentMessage}
       />
@@ -100,7 +71,7 @@ function App() {
       <Form 
         handleChange={handleChange}
         sendUsername={sendUsername}
-        inputError={inputError}
+        inputError={user.inputError}
       />
     </div>
   );

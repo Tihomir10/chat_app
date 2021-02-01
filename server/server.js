@@ -21,17 +21,20 @@ io.on('connection', socket => {
   });
   socket.on('newUser', async (username) => {
     var users =await User.find({});
+
     var user = new User({
       name: username,
       userID: socket.id
-    })
+    });
+
     await user.save(function (err) {
       if (err) return err;
-    })
-    socket.emit('loggedUser', users)
+    });
+
+    socket.emit('loggedUser', users);
   });
-  socket.on('private message', (msg) => {
-    socket.to(msg.userid).emit('message', msg.message)
+  socket.on('private message', (message) => {
+    socket.to(message.sendtoid).emit('message', message)
   });
 });
 
