@@ -38,3 +38,27 @@ form {
 input {
   text-align: center;
 }
+
+ul {
+  height: 100%;
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+li {
+  cursor: pointer;
+  font-size: large;
+  margin: 1rem 0;
+}
+
+li:hover {
+  background-color: #D8D5D5;
+}
+
+.users {
+  height: 100%;
+  padding: 1rem;
+  text-align: center;
+  width: 20%;
+}
