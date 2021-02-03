@@ -17,7 +17,11 @@ db.once('open', function() {
 
 io.on('connection', socket => {
   socket.on('disconnect', () => {
-    console.log('disconnected')
+    User.findOneAndRemove({userID: socket.id}, function (err) {
+      if (err) { 
+        console.log(err) 
+      }
+    })
   });
   socket.on('newUser', async (username) => {
     var user = await User.find({name: username});
