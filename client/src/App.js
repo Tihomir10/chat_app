@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { io } from 'socket.io-client';
 
 import Form from './components/Form';
-import Users from './components/Users';
+import Chat from './components/Chat';
 
 const socket = io('http://localhost:4001', { transports: ['websocket']});
 
@@ -19,7 +19,7 @@ function App() {
 
 
   //Receive list of users
-  socket.on('loggedUser', loggedUsers => {
+  socket.on('loggedUsers', loggedUsers => {
     setListOfUsers(loggedUsers);
     setSubmit(true);
   });
@@ -27,9 +27,12 @@ function App() {
 
   //Receiving a private message
   socket.on('message', msg => {
-    console.log(msg)
     setReceivedMessage(msg)
   });
+
+  socket.on('usernameTaken', err => {
+    setUser({inputError: err})
+  })
 
   //Sending a private message
   const handleSentMessage = (event) => {
@@ -57,7 +60,7 @@ function App() {
   //Display users if user is submited
   if (submit) {
     return (
-      <Users 
+      <Chat 
         users={listOfUsers} 
         handleChange={handleChange}
         receivedMessage={receivedMessage}

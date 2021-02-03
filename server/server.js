@@ -20,18 +20,23 @@ io.on('connection', socket => {
     console.log('disconnected')
   });
   socket.on('newUser', async (username) => {
-    var users =await User.find({});
+    var user = await User.find({name: username});
+    if (user.length == 0) {
+      var user = new User({
+        name: username,
+        userID: socket.id
+      });
 
-    var user = new User({
-      name: username,
-      userID: socket.id
-    });
+      await user.save(function (err) {
+        if (err) return err;
+      });
 
-    await user.save(function (err) {
-      if (err) return err;
-    });
+      var users = await User.find({})
 
-    socket.emit('loggedUser', users);
+      socket.emit('loggedUsers', users);
+    }
+
+    socket.emit('usernameTaken', 'Username is taken')
   });
   socket.on('private message', (message) => {
     socket.to(message.sendtoid).emit('message', message)
