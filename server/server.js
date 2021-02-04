@@ -15,6 +15,8 @@ db.once('open', function() {
   console.log('connected to mongodb')
 });
 
+
+
 io.on('connection', socket => {
   socket.on('disconnect', () => {
     User.findOneAndRemove({userID: socket.id}, function (err) {
@@ -35,12 +37,13 @@ io.on('connection', socket => {
         if (err) return err;
       });
 
-      var users = await User.find({})
-
-      socket.emit('loggedUsers', users);
+      User.watch().on('change', async (change) => {
+        var users = await User.find({});
+        socket.emit('loggedUsers', users);
+      });
+    } else {
+      socket.emit('usernameTaken', 'Username is taken')
     }
-
-    socket.emit('usernameTaken', 'Username is taken')
   });
   socket.on('private message', (message) => {
     socket.to(message.sendtoid).emit('message', message)
