@@ -9,13 +9,15 @@ const socket = io('http://localhost:4001', { transports: ['websocket']});
 function App() {
   const [ user, setUser ] = useState({inputError: ''});
 
-  const [ sentMessage, setSentMessage ]  = useState({});
+  const [ sentMessage, setSentMessage ]  = useState();
 
   const [ submit, setSubmit ] = useState(false);
 
   const [ listOfUsers, setListOfUsers ] = useState({});
 
   const [ receivedMessage, setReceivedMessage ] = useState({username: '', message: ''});
+
+  const [ activeChats, setActiveChats ] = useState([]);
 
 
   //Receive list of users
@@ -57,6 +59,16 @@ function App() {
     event.preventDefault();
   }
 
+  //Add chat form 
+  const addChat = (event) => {
+    var user = listOfUsers.find(obj => obj.name === event.target.id);
+    var userID = user.userID;
+    var username = user.name
+    setActiveChats([...activeChats, {
+      userID, username
+    }]);
+  }
+
   //Display users if user is submited
   if (submit) {
     return (
@@ -65,6 +77,8 @@ function App() {
         handleChange={handleChange}
         receivedMessage={receivedMessage}
         handleSentMessage={handleSentMessage}
+        activeChats={activeChats}
+        addChat={addChat}
       />
     )
   }
