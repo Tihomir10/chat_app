@@ -1,10 +1,11 @@
 function MessagingForm(props) {
   return (
-    <form>
-      <input name='userID' value={props.userID} className='userIdInput' />
-      <input name='message' placeholder='Type...' />
-      <input type='submit' value='Send' />
-    </form>
+    <div>
+      <form onSubmit={props.handleSentMessage}>
+        <input name='message' placeholder='Type...' onChange={props.handleChange} />
+        <input type='submit' value='Send' />
+      </form>
+    </div>
   )
 }
 
