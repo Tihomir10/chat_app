@@ -7,51 +7,24 @@ import Chat from './components/Chat';
 const socket = io('http://localhost:4001', { transports: ['websocket']});
 
 function App() {
-  const [ user, setUser ] = useState({inputError: ''});
+  const [ user, setUser ] = useState({inputError: '', sent: false});
 
-  const [ sentMessage, setSentMessage ]  = useState();
+  const [ listOfUsers, setListOfUsers ] = useState([]);
 
-  const [ submit, setSubmit ] = useState(false);
+  const [ message, setMessage ] = useState({text: ''});
 
-  const [ listOfUsers, setListOfUsers ] = useState({});
+  const [ chat, setChat ] = useState([]);
 
-  const [ receivedMessage, setReceivedMessage ] = useState({username: '', message: ''});
-
-  const [ activeChats, setActiveChats ] = useState([]);
-
-
-  //Receive list of users
-  socket.on('loggedUsers', loggedUsers => {
-    setListOfUsers(loggedUsers);
-    setSubmit(true);
-  });
-
-
-  //Receiving a private message
-  socket.on('message', msg => {
-    setReceivedMessage(msg)
-  });
-
-  socket.on('usernameTaken', err => {
-    setUser({inputError: err})
-  })
-
-  //Sending a private message
-  const handleSentMessage = (event) => {
-    socket.emit('private message', sentMessage);
-    event.preventDefault();
-  }
-
-  //Create user 
+  //Set username
   const handleChange = (event) => {
     if (event.target.name === 'username' && event.target.value.length < 4) {
       setUser({inputError: 'Username must be 4 characters or longer'});
     } else if (event.target.name === 'username') {
       setUser({inputError: '', [event.target.name]: event.target.value});
     }
-    setSentMessage({...sentMessage, [event.target.name]: event.target.value})
   }
 
+  //Send username to check availability and save
   const sendUsername = (event) => {
     if (user.username) {
       socket.emit('newUser', user.username);
@@ -59,26 +32,39 @@ function App() {
     event.preventDefault();
   }
 
-  //Add chat form 
-  const addChat = (event) => {
-    var user = listOfUsers.find(obj => obj.name === event.target.id);
-    var userID = user.userID;
-    var username = user.name
-    setActiveChats([...activeChats, {
-      userID, username
-    }]);
+  socket.on('usernameTaken', err => {
+    setUser({inputError: err})
+  });
+
+  //Receive list of users and current user after username submit
+  socket.on('listOfUsers', data => {
+    setListOfUsers(data.users);
+    setUser({senderUsername: data.user.name, senderID: data.user.userID, sent: true})
+  });
+
+  //Create chat object for two users
+  const createChat = (event) => {
+    var receiverUser = listOfUsers.find(obj => obj.name === event.target.id);
+    var receiverID = receiverUser.userID;
+    var receiverUsername = receiverUser.name;
+    var chatName = receiverID + user.senderID;
+    chatName = chatName.split('').sort().join('');;
+
+    //CHECK IF CHAT WITH SAME NAME EXiSTS
+
+    setChat([...chat, {
+      chatName, receiverID, receiverUsername, senderID: user.senderID, senderUsername: user.senderUsername, messages: []
+    }]); 
   }
 
-  //Display users if user is submited
-  if (submit) {
+  if (user.sent) {
     return (
       <Chat 
-        users={listOfUsers} 
+        listOfUsers={listOfUsers} 
         handleChange={handleChange}
-        receivedMessage={receivedMessage}
-        handleSentMessage={handleSentMessage}
-        activeChats={activeChats}
-        addChat={addChat}
+        message={message}
+        chat={chat}
+        createChat={createChat}
       />
     )
   }
