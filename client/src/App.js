@@ -22,6 +22,11 @@ function App() {
     } else if (event.target.name === 'username') {
       setUser({inputError: '', [event.target.name]: event.target.value});
     }
+    if (event.target.name === 'message') {
+      setMessage({
+        text: event.target.value,
+      });
+    }
   }
 
   //Send username to check availability and save
@@ -55,7 +60,26 @@ function App() {
     setChat([...chat, {
       chatName, receiverID, receiverUsername, senderID: user.senderID, senderUsername: user.senderUsername, messages: []
     }]); 
-  }
+  };
+
+  const handleSentMessage = (event) => {
+    event.preventDefault();
+
+    setChat(chat.map(chatObj => {
+      if (chatObj.chatName === event.target.name) {
+        setMessage({...message, receiverID: chatObj.receiverID})
+        return {...chatObj, messages: [...chatObj.messages, message]}
+      }
+      return chatObj;
+    }));
+    
+    socket.emit('private message', message)
+  };
+
+  socket.on('message', receivedMessage => {
+    console.log('got message',receivedMessage)
+    setMessage({...message, receivedMessage})
+  });
 
   if (user.sent) {
     return (
@@ -65,6 +89,7 @@ function App() {
         message={message}
         chat={chat}
         createChat={createChat}
+        handleSentMessage={handleSentMessage}
       />
     )
   }
