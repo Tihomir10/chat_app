@@ -39,14 +39,14 @@ io.on('connection', socket => {
 
       User.watch().on('change', async (change) => {
         var users = await User.find({});
-        socket.emit('loggedUsers', users);
+        socket.emit('listOfUsers', {users, user});
       });
     } else {
       socket.emit('usernameTaken', 'Username is taken')
     }
   });
   socket.on('private message', (message) => {
-    socket.to(message.sendtoid).emit('message', message)
+    socket.to(message.receiverID).emit('message', message.text)
   });
 });
 
