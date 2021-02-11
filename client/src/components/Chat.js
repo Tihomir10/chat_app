@@ -15,6 +15,10 @@ function Chat(props) {
               <MessagingForm 
                 receiverID={user.receiverID} 
                 receiverUsername={user.receiverUsername}
+                handleChange={props.handleChange}
+                handleSentMessage={props.handleSentMessage}
+                chatName={user.chatName}
+                getReceiverID={props.getReceiverID}
               />
             </div>
           )
