@@ -46,7 +46,7 @@ io.on('connection', socket => {
     }
   });
   socket.on('private message', (message) => {
-    socket.to(message.receiverID).emit('message', message.text)
+    io.to(message.receiverID).emit('message', message.text)
   });
 });
 
