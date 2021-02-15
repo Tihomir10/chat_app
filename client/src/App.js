@@ -15,6 +15,8 @@ function App() {
 
   const [ chat, setChat ] = useState([]);
 
+  const [ received, setReceived ] = useState([]);
+
   //Set username
   const handleChange = (event) => {
     if (event.target.name === 'username' && event.target.value.length < 4) {
@@ -49,19 +51,18 @@ function App() {
 
   //Create chat object for two users
   const createChat = (event) => {
+    var receiverUsername = event.target.id;
+    var chatName = receiverUsername + user.senderUsername;
+    chatName = chatName.split('').sort().join('');
     //Check if caht with same name exists
     for(var i = 0; i < chat.length; i++) {
-      if (chat[i].chatName == receiverID) {
-          break;
+      if (chat[i].chatName == chatName) {
+          return;
       }
-      return
     }
 
     var receiverUser = listOfUsers.find(obj => obj.name === event.target.id);
     var receiverID = receiverUser.userID;
-    var receiverUsername = receiverUser.name;
-    var chatName = receiverID + user.senderID;
-    chatName = chatName.split('').sort().join('');;
 
     setChat([...chat, {
       chatName, receiverID, receiverUsername, senderID: user.senderID, senderUsername: user.senderUsername, messages: []
@@ -69,10 +70,14 @@ function App() {
   };
 
   const getReceiverID = (event) => {
-    setMessage({...message, receiverID: event.target.id})
+    var chatName = event.target.id;
+    var obj = chat.filter(obj => obj.chatName === chatName);
+    obj = obj[0]
+    setMessage({...message, chatName: obj.chatName, receiverID: obj.receiverID, sender: user.senderUsername})
   }
 
   const handleSentMessage = (event) => {
+    setMessage({...message, chatName: event.target.name})
     setChat(chat.map(chatObj => {
       if (chatObj.chatName === event.target.name) {
         return {...chatObj, messages: [...chatObj.messages, message]}
@@ -85,8 +90,14 @@ function App() {
   };
 
   socket.on('message', receivedMessage => {
-    console.log(receivedMessage)
-    setMessage({text: '', receiverID: ''})
+    setMessage({text: receivedMessage.text, sender: receivedMessage.sender})
+    setChat(chat.map(chatObj => {
+      if (chatObj.chatName === receivedMessage.chatName) {
+        return {...chatObj, messages: [...chatObj.messages, message]}
+      }
+      return chatObj;
+    }));
+    setReceived(chat)
   });
 
   if (user.sent) {
@@ -99,6 +110,7 @@ function App() {
         createChat={createChat}
         handleSentMessage={handleSentMessage}
         getReceiverID={getReceiverID}
+        received={received}
       />
     )
   }
