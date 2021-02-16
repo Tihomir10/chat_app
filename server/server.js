@@ -46,8 +46,9 @@ io.on('connection', socket => {
     }
   });
   socket.on('private message', (message) => {
-    io.to(message.receiverID).emit('message', message.text)
-  });
+    console.log(message)
+    io.to(message.receiverID).emit('message', message)
+  })
 });
 
 server.listen(PORT, console.log(`Listening on port: ${PORT}`))
