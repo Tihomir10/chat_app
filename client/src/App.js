@@ -27,6 +27,7 @@ function App() {
     if (event.target.name === 'message') {
       setMessage({...message,
         text: event.target.value,
+        senderID: user.senderID
       });
     }
   }
@@ -65,7 +66,7 @@ function App() {
     var receiverID = receiverUser.userID;
 
     setChat([...chat, {
-      chatName, receiverID, receiverUsername, senderID: user.senderID, senderUsername: user.senderUsername, messages: []
+      chatName, receiverID, senderUsername: user.senderUsername, messages: []
     }]); 
   };
 
@@ -77,7 +78,6 @@ function App() {
   }
 
   const handleSentMessage = (event) => {
-    setMessage({...message, chatName: event.target.name})
     setChat(chat.map(chatObj => {
       if (chatObj.chatName === event.target.name) {
         return {...chatObj, messages: [...chatObj.messages, message]}
@@ -90,14 +90,21 @@ function App() {
   };
 
   socket.on('message', receivedMessage => {
-    setMessage({text: receivedMessage.text, sender: receivedMessage.sender})
+    setMessage({text: receivedMessage.text, sender: receivedMessage.sender, chatName: receivedMessage.chatName})
+    if (!chat.length) {
+      setChat([...chat, {
+        chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]
+      }]); 
+      return
+    }
+
     setChat(chat.map(chatObj => {
       if (chatObj.chatName === receivedMessage.chatName) {
-        return {...chatObj, messages: [...chatObj.messages, message]}
+        return {...chatObj, messages: [...chatObj.messages, receivedMessage]}
       }
       return chatObj;
     }));
-    setReceived(chat)
+    
   });
 
   if (user.sent) {
