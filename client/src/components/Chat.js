@@ -1,5 +1,6 @@
 import MessagingForm from './MessagingForm';
-import UsersList from './UsersList'
+import UsersList from './UsersList';
+import ExchangedMessages from './ExchangedMessages'
 
 function Chat(props) {
   return (
@@ -12,13 +13,13 @@ function Chat(props) {
         {props.chat.map(user => {
           return (
             <div>
+              <ExchangedMessages messages={user.messages} />
               <MessagingForm 
-                receiverID={user.receiverID} 
-                receiverUsername={user.receiverUsername}
                 handleChange={props.handleChange}
                 handleSentMessage={props.handleSentMessage}
                 chatName={user.chatName}
-                getReceiverID={props.getReceiverID}
+                message={props.message}
+                updateMessageForSending={props.updateMessageForSending}
               />
             </div>
           )
