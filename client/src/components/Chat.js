@@ -4,27 +4,25 @@ import ExchangedMessages from './ExchangedMessages'
 
 function Chat(props) {
   return (
-    <div>
+    <div className='container-fluid'>
       <UsersList 
         listOfUsers={props.listOfUsers}
         createChat={props.createChat}
       />
-      <div className='chats'>
-        {props.chat.map(user => {
-          return (
-            <div>
-              <ExchangedMessages messages={user.messages} />
-              <MessagingForm 
-                handleChange={props.handleChange}
-                handleSentMessage={props.handleSentMessage}
-                chatName={user.chatName}
-                message={props.message}
-                updateMessageForSending={props.updateMessageForSending}
-              />
-            </div>
-          )
-        })}
-      </div>
+      {props.currentChat.map(user => {
+        return (
+          <div className='chats'>
+            <ExchangedMessages messages={user.messages} />
+            <MessagingForm 
+              handleChange={props.handleChange}
+              handleSentMessage={props.handleSentMessage}
+              chatName={user.chatName}
+              message={props.message}
+              updateMessageForSending={props.updateMessageForSending}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }

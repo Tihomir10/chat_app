@@ -15,6 +15,8 @@ function App() {
 
   const [ chat, setChat ] = useState([]);
 
+  const [ currentChat, setCurrentChat ] = useState([]);
+
   //Set username
   const handleChange = (event) => {
     if (event.target.name === 'username' && event.target.value.length < 4) {
@@ -55,7 +57,8 @@ function App() {
     //Check if caht with same name exists
     for(var i = 0; i < chat.length; i++) {
       if (chat[i].chatName == chatName) {
-          return;
+        setCurrentChat([chat[i]])
+        return;
       }
     }
 
@@ -65,6 +68,7 @@ function App() {
     setChat([...chat, {
       chatName, receiverID, senderUsername: user.senderUsername, messages: []
     }]); 
+    setCurrentChat([{ chatName, receiverID, senderUsername: user.senderUsername, messages: []}])
   };
 
   const updateMessageForSending = (event) => {
@@ -77,6 +81,7 @@ function App() {
   const mapAndUpdateChat = (msg) => {
     setChat(chat.map(chatObj => {
       if (chatObj.chatName === msg.chatName) {
+        setCurrentChat([{...chatObj, messages: [...chatObj.messages, msg]}])
         return {...chatObj, messages: [...chatObj.messages, msg]}
       }
       return chatObj;
@@ -95,6 +100,7 @@ function App() {
       setChat([...chat, {
         chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]
       }]); 
+      setCurrentChat([{chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]}])
       return
     }
     mapAndUpdateChat(receivedMessage);
@@ -110,6 +116,7 @@ function App() {
         createChat={createChat}
         handleSentMessage={handleSentMessage}
         updateMessageForSending={updateMessageForSending}
+        currentChat={currentChat}
       />
     )
   }
