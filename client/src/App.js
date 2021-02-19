@@ -56,7 +56,7 @@ function App() {
     chatName = chatName.split('').sort().join('');
     //Check if caht with same name exists
     for(var i = 0; i < chat.length; i++) {
-      if (chat[i].chatName == chatName) {
+      if (chat[i].chatName === chatName) {
         setCurrentChat([chat[i]])
         return;
       }
@@ -107,7 +107,15 @@ function App() {
       setCurrentChat([{chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]}])
       return
     }
-    mapAndUpdateChat(receivedMessage);
+    if (chat.some(item => item.chatName === receivedMessage.chatName)) {
+      mapAndUpdateChat(receivedMessage);
+    } else {
+      setChat([...chat, {
+        chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]
+      }]); 
+      setCurrentChat([{chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]}])
+      return
+    }
   });
 
   if (user.sent) {
