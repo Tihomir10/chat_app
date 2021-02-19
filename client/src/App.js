@@ -65,6 +65,10 @@ function App() {
     var receiverUser = listOfUsers.find(obj => obj.name === event.target.id);
     var receiverID = receiverUser.userID;
 
+    if (receiverID === user.senderID) {
+      return
+    }
+
     setChat([...chat, {
       chatName, receiverID, senderUsername: user.senderUsername, messages: []
     }]); 
