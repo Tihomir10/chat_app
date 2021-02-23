@@ -16,7 +16,7 @@ function App() {
 
   const [ chat, setChat ] = useState([]);
 
-  const [ currentChat, setCurrentChat ] = useState([{chatName: '', receiverID: '', senderUsername: '', messages: []}]);
+  const [ currentChat, setCurrentChat ] = useState({chatName: '', receiverID: '', senderUsername: '', messages: []});
 
   //Set username
   const handleChange = (event) => {
@@ -52,14 +52,14 @@ function App() {
   const checkForChatObjectByName = (chatname) => {
     for(var i = 0; i < chat.length; i++) {
       if (chat[i].chatName === chatname) {
-        setCurrentChat([chat[i]])
+        setCurrentChat(chat[i])
         return;
       }
     }
   }
 
   const updateChatArray = (prevChat) => {
-    if (chat.length && currentChat[0].chatName !== '') {
+    if (chat.length && currentChat.chatName !== '') {
       if (chat.some(item => item.chatName === prevChat.chatName)) {
         setChat(chat.map(chatObj => {
           if (chatObj.chatName === prevChat.chatName) {
@@ -73,9 +73,9 @@ function App() {
     }
   }
 
-  //Create chat object for two users
+  //Create chat object
   const createChat = (event) => {
-    var prevChat = currentChat[0]
+    var prevChat = currentChat;
     var receiverUsername = event.target.id;
     var chatName = receiverUsername + user.senderUsername;
     chatName = chatName.split('').sort().join('');
@@ -87,9 +87,9 @@ function App() {
       return
     }
 
-    setCurrentChat([{ chatName, receiverID, senderUsername: user.senderUsername, messages: []}])
+    setCurrentChat({ chatName, receiverID, senderUsername: user.senderUsername, messages: []})
 
-    if (!chat.length && currentChat[0].chatName !== '') {
+    if (!chat.length && currentChat.chatName !== '') {
       setChat([prevChat])
     }
 
@@ -98,7 +98,7 @@ function App() {
   };
 
   const updateMessageForSending = (event) => {
-    var obj = currentChat[0]
+    var obj = currentChat
     setMessage({...message, chatName: obj.chatName, receiverID: obj.receiverID, sender: user.senderUsername, senderID: user.senderID})
   }
 
@@ -107,17 +107,17 @@ function App() {
     if (!message.text) {
       return
     }
-    setCurrentChat([{...currentChat[0], messages: [...currentChat[0].messages, message]}])
+    setCurrentChat({...currentChat, messages: [...currentChat.messages, message]})
     socket.emit('private message', message);
     setMessage({...message, text: ''})
   };
 
   socket.on('message', receivedMessage => {
-    if (!currentChat[0].messages) {
-      setCurrentChat([{chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]}])
+    if (!currentChat.messages) {
+      setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]})
       return
     }
-    setCurrentChat([{chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [...currentChat[0].messages, receivedMessage]}])
+    setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [...currentChat.messages, receivedMessage]})
   });
 
   if (user.sent) {
@@ -129,7 +129,7 @@ function App() {
         />
         <Chat 
           handleChange={handleChange}
-          chat={currentChat[0]}
+          chat={currentChat}
           handleSentMessage={handleSentMessage}
           updateMessageForSending={updateMessageForSending}
         />
