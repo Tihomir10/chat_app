@@ -49,40 +49,52 @@ function App() {
     setUser({senderUsername: data.user.name, senderID: data.user.userID, sent: true})
   });
 
-  //Create chat object for two users
-  const createChat = (event) => {
-    if (currentChat[0].chatName) {
-      setChat(chat.map(chatObj => {
-        if (chatObj.chatName === currentChat[0].chatName) {
-          return {...chatObj, messages: currentChat[0].messages}
-        }
-        return chatObj;
-      }));;
-    }
-
-    var receiverUsername = event.target.id;
-    var chatName = receiverUsername + user.senderUsername;
-    chatName = chatName.split('').sort().join('');
-
-    //Check if chat with same name exists
+  const checkForChatObjectByName = (chatname) => {
     for(var i = 0; i < chat.length; i++) {
-      if (chat[i].chatName === chatName) {
+      if (chat[i].chatName === chatname) {
         setCurrentChat([chat[i]])
         return;
       }
     }
+  }
 
+  const updateChatArray = (prevChat) => {
+    if (chat.length && currentChat[0].chatName !== '') {
+      if (chat.some(item => item.chatName === prevChat.chatName)) {
+        setChat(chat.map(chatObj => {
+          if (chatObj.chatName === prevChat.chatName) {
+            return prevChat;
+          }
+          return chatObj;
+        }));
+      } else {
+        setChat([...chat, prevChat])
+      }
+    }
+  }
+
+  //Create chat object for two users
+  const createChat = (event) => {
+    var prevChat = currentChat[0]
+    var receiverUsername = event.target.id;
+    var chatName = receiverUsername + user.senderUsername;
+    chatName = chatName.split('').sort().join('');
     var receiverUser = listOfUsers.find(obj => obj.name === event.target.id);
     var receiverID = receiverUser.userID;
 
-    if (receiverID === user.senderID) {
+    //If clicked chat is already open or user wants to send chat to himself
+    if (prevChat.chatName === chatName || receiverID === user.senderID) {
       return
     }
 
-    setChat([...chat, {
-      chatName, receiverID, senderUsername: user.senderUsername, messages: []
-    }]); 
     setCurrentChat([{ chatName, receiverID, senderUsername: user.senderUsername, messages: []}])
+
+    if (!chat.length && currentChat[0].chatName !== '') {
+      setChat([prevChat])
+    }
+
+    updateChatArray(prevChat);
+    checkForChatObjectByName(chatName);
   };
 
   const updateMessageForSending = (event) => {
@@ -90,27 +102,14 @@ function App() {
     setMessage({...message, chatName: obj.chatName, receiverID: obj.receiverID, sender: user.senderUsername, senderID: user.senderID})
   }
 
-  const mapAndUpdateChat = (msg) => {
-    setChat(chat.map(chatObj => {
-      if (chatObj.chatName === msg.chatName) {
-        setCurrentChat([{...chatObj, messages: [...chatObj.messages, msg]}])
-        return {...chatObj, messages: [...chatObj.messages, msg]}
-      }
-      return chatObj;
-    }));
-  }
-
   const handleSentMessage = (event) => {
-    if (!currentChat[0].messages) {
-      console.log('here')
-      setCurrentChat([{...currentChat[0], messages: [message]}])
-    } else {
-      setCurrentChat([{...currentChat[0], messages: [...currentChat[0].messages, message]}])
+    event.preventDefault();
+    if (!message.text) {
+      return
     }
-    
+    setCurrentChat([{...currentChat[0], messages: [...currentChat[0].messages, message]}])
     socket.emit('private message', message);
     setMessage({...message, text: ''})
-    event.preventDefault();
   };
 
   socket.on('message', receivedMessage => {
