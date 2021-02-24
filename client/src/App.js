@@ -97,7 +97,7 @@ function App() {
     checkForChatObjectByName(chatName);
   };
 
-  const updateMessageForSending = (event) => {
+  const updateMessageForSending = () => {
     var obj = currentChat
     setMessage({...message, chatName: obj.chatName, receiverID: obj.receiverID, sender: user.senderUsername, senderID: user.senderID})
   }
@@ -113,11 +113,16 @@ function App() {
   };
 
   socket.on('message', receivedMessage => {
-    if (!currentChat.messages) {
-      setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]})
-      return
+    if (!currentChat.chatName) {
+      setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]});
+      return;
     }
-    setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [...currentChat.messages, receivedMessage]})
+    if (currentChat.chatName === receivedMessage.chatName) {
+      setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [...currentChat.messages, receivedMessage]})
+    } else {
+      setChat([...chat, currentChat])
+      setCurrentChat({chatName: receivedMessage.chatName, receiverID: receivedMessage.senderID, senderUsername: user.senderUsername, messages: [receivedMessage]})
+    }
   });
 
   if (user.sent) {
@@ -128,9 +133,10 @@ function App() {
           createChat={createChat}
         />
         <Chat 
-          handleChange={handleChange}
           chat={currentChat}
+          handleChange={handleChange}
           handleSentMessage={handleSentMessage}
+          text={message.text}
           updateMessageForSending={updateMessageForSending}
         />
       </div>
