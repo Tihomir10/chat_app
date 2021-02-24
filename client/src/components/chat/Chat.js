@@ -10,6 +10,7 @@ function Chat(props) {
           chatName={props.chat.chatName}
           handleChange={props.handleChange}
           handleSentMessage={props.handleSentMessage}
+          text={props.text}
           updateMessageForSending={props.updateMessageForSending}
         />
       </div>
