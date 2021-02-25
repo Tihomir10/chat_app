@@ -21,7 +21,7 @@ code {
     monospace;
 }
 
-#center {
+.center {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -95,4 +95,10 @@ li:hover {
 .messages {
   font-size: 1.2em;
   margin: 0.5rem;
+}
+
+.registration > input {
+  display: block;
+  margin: 0 auto 2rem auto;
+  width: 100%;
 }
