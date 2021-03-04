@@ -1,6 +1,6 @@
 function LoginForm(props) {
   return (
-    <form id='center'>
+    <form className='center'>
       <div className="form-group">
         <label>Username</label>
         <input type="text" name='username' className="form-control" onChange={props.handleChange} />
