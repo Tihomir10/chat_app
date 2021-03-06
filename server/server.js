@@ -1,11 +1,24 @@
-const app = require('express')();
+const express = require('express')
+const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server);
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+const cors = require('cors')
 require('dotenv').config()
-
 const PORT = process.env.PORT || 4001;
-const User = require('./models/user')
+
+const indexRouter = require('./routes/index')
+
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.use('/api', indexRouter)
 
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -13,42 +26,6 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log('connected to mongodb')
-});
-
-
-
-io.on('connection', socket => {
-  socket.on('disconnect', () => {
-    User.findOneAndRemove({userID: socket.id}, function (err) {
-      if (err) { 
-        console.log(err) 
-      }
-    })
-  });
-  socket.on('newUser', async (username) => {
-    var user = await User.find({name: username});
-    if (user.length == 0) {
-      var user = new User({
-        name: username,
-        userID: socket.id
-      });
-
-      await user.save(function (err) {
-        if (err) return err;
-      });
-
-      User.watch().on('change', async (change) => {
-        var users = await User.find({});
-        socket.emit('listOfUsers', {users, user});
-      });
-    } else {
-      socket.emit('usernameTaken', 'Username is taken')
-    }
-  });
-  socket.on('private message', (message) => {
-    console.log(message)
-    io.to(message.receiverID).emit('message', message)
-  })
 });
 
 server.listen(PORT, console.log(`Listening on port: ${PORT}`))
