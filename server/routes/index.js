@@ -1,12 +1,8 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 
-router.post('/register', (req, res) => {
-  console.log(req.body)
-})
+const indexController = require('../controllers/indexController')
 
-router.post('/login', (req, res) => {
-  console.log(req.body)
-})
+router.post('/register', indexController.user_create_post)
 
 module.exports = router
