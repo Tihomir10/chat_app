@@ -1,10 +1,10 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server);
 const mongoose = require('mongoose')
-const cors = require('cors')
-require('dotenv').config()
 const PORT = process.env.PORT || 4001;
 
 const indexRouter = require('./routes/index')
@@ -28,4 +28,4 @@ db.once('open', function() {
   console.log('connected to mongodb')
 });
 
-server.listen(PORT, console.log(`Listening on port: ${PORT}`))
+app.listen(PORT, console.log(`Listening on port: ${PORT}`))
