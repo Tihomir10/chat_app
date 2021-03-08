@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { userRegistered } from './usersSlice'
+import { postUser } from './usersSlice'
 
 export const RegistrationForm = () => {
+  const dispatch = useDispatch()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfiramtion] = useState('')
-
-  const dipatch = useDispatch()
 
   const onUsernameChanged = e => setUsername(e.target.value)
   const onPasswordChanged = e => setPassword(e.target.value)
@@ -17,7 +17,7 @@ export const RegistrationForm = () => {
 
   const onRegisterButtonClicked = () => {
     if (username && password && passwordConfirmation) {
-      dipatch(userRegistered(username, password, passwordConfirmation))
+      dispatch(postUser({username, password}))
       setUsername('')
       setPassword('')
       setPasswordConfiramtion('')
