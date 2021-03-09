@@ -1,3 +1,5 @@
+const bycrypt = require('bcrypt')
+
 const User = require('../models/user')
 
 exports.user_create_post = async (req, res) => {
@@ -15,6 +17,25 @@ exports.user_create_post = async (req, res) => {
     });
     const { name, _id } = user
     res.send({name, userId: _id, code: 201, redirectUrl: '/login'})
+  } else {
+    res.send({error: 'Something went wrong'})
+  }
+}
+
+exports.user_login_post = async (req, res) => {
+  const query = await User.find({ name: req.body.username }).exec()
+
+  if (Array.isArray(query) && query.length) {
+    bycrypt.compare(req.body.password, query[0].password, function(err, result) {
+      if (result) {
+        const { name, _id } = query[0]
+        res.send({name, userId: _id, code: 201, redirectUrl: '/chat'})
+      } else {
+        res.send({error: 'Incorrect password'})
+      }
+    })    
+  } else if (Array.isArray(query) && !query.length) {
+    res.send({error: 'No such user'})
   } else {
     res.send({error: 'Something went wrong'})
   }
