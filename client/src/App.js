@@ -1,34 +1,19 @@
 import { 
-  BrowserRouter as Router,
+  Router,
   Switch,
-  Route,
-  Link
+  Route
  } from 'react-router-dom'
-
+import { history } from './history'
 import { RegistrationForm } from './features/user/RegistartionForm'
 import { LoginForm } from './features/user/LoginForm'
 
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Link to='/login'>
-          Login
-        </Link>
-      </div>
-      <div>
-        <Link to='/'>
-          Register
-        </Link>
-      </div>
+    <Router history={history}>
       <Switch>
-        <Route exact path='/'>
-          <RegistrationForm />
-        </Route>
-        <Route exact path='/login'>
-          <LoginForm />
-        </Route>
+        <Route exact path='/' component={RegistrationForm}/>
+        <Route exact path='/login' component={LoginForm}/>
       </Switch>
     </Router>
   )
