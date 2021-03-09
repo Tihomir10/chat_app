@@ -1,24 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { registerUser } from '../../api/index'
+import { history } from '../..//history'
+import { registerUser } from '../../api'
 
-const initialState = []
+const initialState = {
+  user: [],
+  status: "idle",
+  errorMsg: null
+}
 
 export const postUser = createAsyncThunk('user/fetchUser', async (data) => {
   const response = await registerUser(data)
-  console.log('im fetching', response)
+  return response
 })
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    userRegistered(state, action) {
-      state.push(action.payload)
-    },
-    userAdded(state, action) {
-      state.push(action.payload)
-    }
+  reducers: {},
+  extraReducers : {
+  [postUser.rejected]: (state, action) => {
+    state.errorMsg = action.payload;
+    state.status = "error"
+  },
+  [postUser.fulfilled]: (state, action) => {
+    state.status = 'success'
+    state.user.push(action.payload)
+    history.push('/login')
+  }
   }
 })
 
