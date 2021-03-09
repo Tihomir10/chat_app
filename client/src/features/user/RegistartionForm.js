@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { postUser } from './usersSlice'
+import { registerUser } from './usersSlice'
 
 export const RegistrationForm = () => {
   const dispatch = useDispatch()
@@ -17,7 +17,7 @@ export const RegistrationForm = () => {
 
   const onRegisterButtonClicked = () => {
     if (username && password && passwordConfirmation) {
-      dispatch(postUser({username, password}))
+      dispatch(registerUser({username, password}))
       setUsername('')
       setPassword('')
       setPasswordConfiramtion('')
