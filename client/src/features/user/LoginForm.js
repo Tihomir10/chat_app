@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { userAdded } from './usersSlice'
+import { loginUser } from './usersSlice'
 
 export const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -14,7 +14,7 @@ export const LoginForm = () => {
 
   const onLoginButtonClicked = () => {
     if (username && password) {
-      dipatch(userAdded(username, password))
+      dipatch(loginUser({username, password}))
       setUsername('')
       setPassword('')
     }
