@@ -4,7 +4,7 @@ exports.user_create_post = async (req, res) => {
   const query = await User.find({ name: req.body.username }).exec()
   if (Array.isArray(query) && query.length) {
     res.send({code: 409})
-  } else {
+  } else if (Array.isArray(query) && !query.length) {
     const user = new User({
       name: req.body.username,
       password: req.body.password
@@ -14,6 +14,8 @@ exports.user_create_post = async (req, res) => {
       if (err) return handleError(err);
     });
     const { name, _id } = user
-    res.send({name, userId: _id, code: 201})
+    res.send({name, userId: _id, code: 201, redirectUrl: '/login'})
+  } else {
+    res.send({error: 'Something went wrong'})
   }
 }
