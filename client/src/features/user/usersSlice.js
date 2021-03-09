@@ -4,7 +4,7 @@ import { history } from '../..//history'
 import { registerUser } from '../../api'
 
 const initialState = {
-  user: [],
+  currentUser: [],
   status: "idle",
   errorMsg: null
 }
@@ -25,8 +25,9 @@ const usersSlice = createSlice({
   },
   [postUser.fulfilled]: (state, action) => {
     state.status = 'success'
-    state.user.push(action.payload)
-    history.push('/login')
+    const { name, userId } = action.payload
+    state.currentUser.push(name, userId)
+    history.push(action.payload.redirectUrl)
   }
   }
 })
