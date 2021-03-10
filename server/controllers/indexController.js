@@ -16,7 +16,7 @@ exports.user_create_post = async (req, res) => {
       if (err) return handleError(err);
     });
     const { name, _id } = user
-    res.send({name, userId: _id, code: 201, redirectUrl: '/login'})
+    res.send({name, userId: _id, code: 201, redirectUrl: '/chat'})
   } else {
     res.send({error: 'Something went wrong'})
   }
@@ -31,11 +31,11 @@ exports.user_login_post = async (req, res) => {
         const { name, _id } = query[0]
         res.send({name, userId: _id, code: 201, redirectUrl: '/chat'})
       } else {
-        res.send({error: 'Incorrect password'})
+        res.send({code: 401})
       }
     })    
   } else if (Array.isArray(query) && !query.length) {
-    res.send({error: 'No such user'})
+    res.send({code: 404})
   } else {
     res.send({error: 'Something went wrong'})
   }
