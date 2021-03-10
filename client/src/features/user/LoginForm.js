@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { loginUser } from './usersSlice'
+import { loginUser } from './currentUserSlice'
 
 export const LoginForm = () => {
+  const dipatch = useDispatch();
+  const errorMsg = useSelector(state => state.user.errorMsg)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const dipatch = useDispatch();
 
   const onUsernameChanged = e => setUsername(e.target.value)
   const onPasswordChanged = e => setPassword(e.target.value)
@@ -42,7 +43,8 @@ export const LoginForm = () => {
           onChange={onPasswordChanged}
         />
       </div>
-      <button type="button"  className="btn btn-primary" onClick={onLoginButtonClicked} disabled={!canLogin} >Login</button>
+      <div className='err-msg'>{errorMsg}</div>
+      <button type="submit"  className="btn btn-primary" onClick={onLoginButtonClicked} disabled={!canLogin} >Login</button>
     </form>
   )
 }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { registerUser } from './usersSlice'
+import { registerUser } from './currentUserSlice'
 
 export const RegistrationForm = () => {
   const dispatch = useDispatch()
+  const errorMsg = useSelector(state => state.user.errorMsg)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -48,6 +49,7 @@ export const RegistrationForm = () => {
         value={passwordConfirmation}
         onChange={onPasswordConfirmationChanged}
       />
+      <div className='err-msg'>{errorMsg}</div>
       <button type="submit" className="btn btn-primary" onClick={onRegisterButtonClicked} disabled={!canRegister}>Submit</button>
       <div><Link to='/login'>Already have an account?</Link></div>
     </form>
