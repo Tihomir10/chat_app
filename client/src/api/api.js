@@ -7,8 +7,12 @@ export const post = async (resource, data = {}) => {
 
   if (response.status === 200 && response.data.code === 201) {
     return response.data
+  } else if (response.status === 200 && response.data.code === 401) {
+    return response.data.error
+  } else if (response.status === 200 && response.data.code === 404) {
+    return response.data.error
   } else if (response.status === 200 && response.data.code === 409) {
-    return response.data.code
+    return response.data.error
   } else {
     return response.data.error
   }
