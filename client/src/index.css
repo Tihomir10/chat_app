@@ -97,8 +97,12 @@ li:hover {
   margin: 0.5rem;
 }
 
-.registration > input {
+input {
   display: block;
   margin: 0 auto 2rem auto;
   width: 100%;
+}
+
+.err-msg {
+  margin: -1rem 0 1rem 0;
 }
