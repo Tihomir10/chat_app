@@ -43,5 +43,10 @@ exports.user_login_post = async (req, res) => {
 
 exports.list_of_users_get = async (req, res) => {
   const query = await User.find({})
-  res.send({data: query})
+  let usersList = query.map(user => ({ 
+    id: user._id,
+    name: user.name
+}));
+
+  res.send({data: usersList})
 }
