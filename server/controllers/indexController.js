@@ -40,3 +40,8 @@ exports.user_login_post = async (req, res) => {
     res.send({error: 'Something went wrong'})
   }
 }
+
+exports.list_of_users_get = async (req, res) => {
+  const query = await User.find({})
+  res.send({data: query})
+}
