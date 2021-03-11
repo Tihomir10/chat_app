@@ -11,11 +11,13 @@ const initialState = {
 
 export const registerUser = createAsyncThunk('user/registerUser', async (data) => {
   const response = await callRegisterUser(data)
+  history.push(response.redirectUrl)
   return response
 })
 
 export const loginUser = createAsyncThunk('user/loginUser', async (data) => {
   const response = await callLoginUser(data)
+  history.push(response.redirectUrl)
   return response
 })
 
@@ -33,7 +35,6 @@ const userSlice = createSlice({
     switch(action.payload.code) {
       case 201:
         state.currentUser = action.payload
-        history.push(action.payload.redirectUrl)
         break
       default:
         state.errorMsg = action.payload
@@ -48,7 +49,6 @@ const userSlice = createSlice({
     switch(action.payload.code) {
       case 201:
         state.currentUser = action.payload
-        history.push(action.payload.redirectUrl)
         break
       default:
         state.errorMsg = action.payload
