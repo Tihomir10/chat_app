@@ -1,21 +1,20 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 
-import { fetchUsers } from './listOfUsersSlice'
+import { fetchUsers, selectListOfUsers } from './listOfUsersSlice'
 
-import { Heading } from './Heading'
 import { ListOfUsers } from './ListOfUsers';
 
 export const ActiveUsers = () => {
+  const users = useSelector(selectListOfUsers)
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchUsers())
   })
-  
+
   return (
     <div className='users'>
-      <Heading />
-      <ListOfUsers />
+      <ListOfUsers users={users}/>
     </div>
   )
 }
