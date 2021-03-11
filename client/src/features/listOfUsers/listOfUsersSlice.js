@@ -24,10 +24,11 @@ const listOfUsersSlice = createSlice({
     },
     [fetchUsers.fulfilled]: (state, action) => {
       state.status = 'success'
-      console.log(action.payload)
       state.listOfUsers = (action.payload)
     }
   }
 })
+
+export const selectListOfUsers = state => state.listOfUsers.listOfUsers
 
 export default listOfUsersSlice.reducer
