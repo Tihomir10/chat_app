@@ -57,6 +57,4 @@ const userSlice = createSlice({
   }
 })
 
-export const { userRegistered, userAdded } = userSlice.actions
-
 export default userSlice.reducer
