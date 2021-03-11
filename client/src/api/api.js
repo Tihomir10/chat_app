@@ -18,4 +18,9 @@ export const post = async (resource, data = {}) => {
   }
 }
 
+export const get = async (resource) => {
+  const response = await axios.get(resource)
+  return response.data.data
+}
+
  
