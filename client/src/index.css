@@ -83,13 +83,13 @@ li:hover {
   display: flex;
   justify-content: flex-start;
   position: absolute;
-  bottom: 4vh;
-  width: 80%;
+  bottom: 1vh;
+  width: 90%;
 }
 
 #message {
   text-align: left;
-  width: 100%;
+  margin: 2rem 0 0 0;
 }
 
 .messages {
@@ -105,4 +105,9 @@ input {
 
 .err-msg {
   margin: -1rem 0 1rem 0;
+}
+
+#submit-msg {
+  margin: 2rem 0 0 0;
+  width: 10%;;
 }
