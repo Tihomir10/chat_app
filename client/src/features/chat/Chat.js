@@ -1,27 +1,14 @@
-import ChatForm from './ChatForm';
-import ChatHistory from './ChatHistory'
+import { Link } from 'react-router-dom'
 
-function Chat(props) {
-  if (props.chat.chatName) {
-    return (
-      <div className='chats'>
-        <ChatHistory messages={props.chat.messages} />
-        <ChatForm 
-          chatName={props.chat.chatName}
-          handleChange={props.handleChange}
-          handleSentMessage={props.handleSentMessage}
-          text={props.text}
-          updateMessageForSending={props.updateMessageForSending}
-        />
-      </div>
-    ) 
-  }
+import { ChatForm } from './ChatForm'
+import { ChatHistory } from './ChatHistory'
 
+export const Chat = () => {
   return (
-    <div>
-      Click on user to start messaging
+    <div className='chats'>
+      <Link to='/chat'>Back to Chat</Link>
+      <ChatForm />
+      <ChatHistory />      
     </div>
   )
 }
-
-export default Chat;
