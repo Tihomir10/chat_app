@@ -10,6 +10,8 @@ import { LoginForm } from './features/user/LoginForm'
 
 import { ActiveUsers } from './features/listOfUsers/ActiveUsers'
 
+import { Chat } from './features/chat/Chat'
+
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <Route exact path='/' component={RegistrationForm}/>
         <Route exact path='/login' component={LoginForm}/>
         <Route exact path='/chat' component={ActiveUsers} />
+        <Route exact path='/chat/:id' component={Chat} />
       </Switch>
     </Router>
   )
