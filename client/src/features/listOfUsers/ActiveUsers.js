@@ -10,7 +10,7 @@ export const ActiveUsers = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchUsers())
-  })
+  }, [dispatch])
 
   return (
     <div className='users'>
