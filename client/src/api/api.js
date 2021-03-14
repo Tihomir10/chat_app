@@ -5,22 +5,27 @@ axios.defaults.baseURL = 'http://localhost:4001'
 export const post = async (resource, data = {}) => {
   const response = await axios.post(resource, data)
 
-  if (response.status === 200 && response.data.code === 201) {
-    return response.data
-  } else if (response.status === 200 && response.data.code === 401) {
-    return response.data.error
-  } else if (response.status === 200 && response.data.code === 404) {
-    return response.data.error
-  } else if (response.status === 200 && response.data.code === 409) {
-    return response.data.error
+  if (response.status !== 200) {
+    throw new Error('Something went wrong')
+  } 
+  if (response.data.code === 1) {
+    return response.data.data
   } else {
-    return response.data.error
+    throw new Error(response.data.errorMessage)
   }
 }
 
 export const get = async (resource) => {
   const response = await axios.get(resource)
-  return response.data.data
+
+  if (response.status !== 200) {
+    throw new Error('Something went wrong')
+  }
+  if (response.data.code === 1) {
+    return response.data.data
+  } else {
+    throw new Error(response.data.errorMessage)
+  }
 }
 
  
