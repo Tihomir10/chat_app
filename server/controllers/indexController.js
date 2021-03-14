@@ -3,41 +3,44 @@ const bycrypt = require('bcrypt')
 const User = require('../models/user')
 
 exports.user_create_post = async (req, res) => {
-  const query = await User.find({ name: req.body.username }).exec()
-  if (Array.isArray(query) && query.length) {
-    res.send({code: 409, error: 'Username taken'})
-  } else if (Array.isArray(query) && !query.length) {
-    const user = new User({
+  try {
+    const user = await User.find({ name: req.body.username });
+
+    if (user.length > 0) {
+      return res.send({ code: 409, errorMessage: "Username taken" });
+    }
+
+    const { name, _id: userId } = await User.create({
       name: req.body.username,
-      password: req.body.password
-    })
-  
-    user.save(function (err) {
-      if (err) return handleError(err);
+      password: req.body.password,
     });
-    const { name, _id } = user
-    res.send({name, userId: _id, code: 201, redirectUrl: '/chat'})
-  } else {
-    res.send({error: 'Something went wrong'})
+
+    res.send({ code: 1, data: { userId, name } });
+  } catch (error) {
+    console.error("user_create_post", error);
+    res.send({ error: "Something went wrong" });
   }
-}
-
+};
+  
 exports.user_login_post = async (req, res) => {
-  const query = await User.find({ name: req.body.username }).exec()
+  try {
+    const user = await User.find({ name: req.body.username });
 
-  if (Array.isArray(query) && query.length) {
-    bycrypt.compare(req.body.password, query[0].password, function(err, result) {
+    if (user.length < 1) {
+      return res.send({code: 404, errorMessage: 'Not registered'})
+    }
+
+    bycrypt.compare(req.body.password, user[0].password, function(err, result) {
       if (result) {
-        const { name, _id } = query[0]
-        res.send({name, userId: _id, code: 201, redirectUrl: '/chat'})
+        const { name, _id: userId } = user[0]
+        res.send({ code: 1, data: {name, userId} })
       } else {
-        res.send({code: 401, error: 'Incorrect credentials'})
+        res.send({code: 401, errorMessage: 'Incorrect credentials'})
       }
-    })    
-  } else if (Array.isArray(query) && !query.length) {
-    res.send({code: 404, error: 'Not registered'})
-  } else {
-    res.send({error: 'Something went wrong'})
+    })
+  } catch (error) {
+    console.log('user_login_post', error)
+    res.send({errorMessage: 'Something went wrong'})
   }
 }
 
@@ -48,5 +51,5 @@ exports.list_of_users_get = async (req, res) => {
     name: user.name
 }));
 
-  res.send({data: usersList})
+  res.send({ code: 1, data: usersList})
 }
