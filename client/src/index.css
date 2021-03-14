@@ -111,3 +111,7 @@ input {
   margin: 2rem 0 0 0;
   width: 10%;;
 }
+
+a {
+  display: block;
+}
