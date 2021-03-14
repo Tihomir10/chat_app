@@ -11,13 +11,13 @@ const initialState = {
 
 export const registerUser = createAsyncThunk('user/registerUser', async (data) => {
   const response = await callRegisterUser(data)
-  history.push(response.redirectUrl)
+  history.push('/chat')
   return response
 })
 
 export const loginUser = createAsyncThunk('user/loginUser', async (data) => {
   const response = await callLoginUser(data)
-  history.push(response.redirectUrl)
+  history.push('/chat')
   return response
 })
 
@@ -26,33 +26,21 @@ const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers : {
-  [registerUser.rejected]: (state, action) => {
-    state.errorMsg = action.payload;
+  [registerUser.rejected]: (state, action) => {   
     state.status = "error"
+    state.errorMsg = action.error.message
   },
   [registerUser.fulfilled]: (state, action) => {
     state.status = 'success'
-    switch(action.payload.code) {
-      case 201:
-        state.currentUser = action.payload
-        break
-      default:
-        state.errorMsg = action.payload
-    }
+    state.currentUser = action.payload
   },
   [loginUser.rejected]: (state, action) => {
-    state.errorMsg = action.payload
     state.status = 'error'
+    state.errorMsg = action.error.message
   },
   [loginUser.fulfilled]: (state, action) => {
     state.status = 'success'
-    switch(action.payload.code) {
-      case 201:
-        state.currentUser = action.payload
-        break
-      default:
-        state.errorMsg = action.payload
-    }
+    state.currentUser = action.payload
   }
   }
 })
