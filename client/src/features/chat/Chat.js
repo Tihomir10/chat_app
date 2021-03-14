@@ -10,11 +10,20 @@ import { ChatHistory } from './ChatHistory'
 export const Chat = ({ match }) => {
   const dispatch = useDispatch()
   const { id } = match.params
-  
+
   const chatBuddy = useSelector(state => selectUserById(state, id))
 
   if (chatBuddy) {
     dispatch(selectedChatBuddy({chatBuddy}))
+  }
+
+  if (!chatBuddy) {
+    return (
+      <div className='chats'>
+        <Link to='/chat'>Back to Chat</Link>
+        <h4>User not found</h4>
+      </div>
+    )
   }
 
   return (
