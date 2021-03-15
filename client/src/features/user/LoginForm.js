@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import socket from '../../socket'
 import { loginUser } from './currentUserSlice'
 
 export const LoginForm = () => {
@@ -16,6 +17,7 @@ export const LoginForm = () => {
   const onLoginButtonClicked = () => {
     if (username && password) {
       dipatch(loginUser({username, password}))
+      socket.auth = { username }
       setUsername('')
       setPassword('')
     }
