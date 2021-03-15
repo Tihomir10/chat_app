@@ -16,7 +16,11 @@ export const fetchUsers = createAsyncThunk('listOfUsers', async () => {
 const listOfUsersSlice = createSlice({
   name: 'listOfUsers',
   initialState,
-  reducers: {},
+  reducers: {
+    setUsers(state, action) {
+      state.listOfUsers = action.payload
+    }
+  },
   extraReducers: {
     [fetchUsers.rejected]: (state, action) => {
       state.status = 'error'
@@ -28,6 +32,8 @@ const listOfUsersSlice = createSlice({
     }
   }
 })
+
+export const { setUsers } = listOfUsersSlice.actions
 
 export const selectListOfUsers = state => state.listOfUsers.listOfUsers
 
