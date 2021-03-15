@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
       name: socket.username
     })
   }
-  socket.emit('users', users)
+  io.emit('users', users)
 })
 
 app.use('/api', indexRouter)
