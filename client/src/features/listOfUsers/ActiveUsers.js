@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
 
-import { fetchUsers, selectListOfUsers } from './listOfUsersSlice'
+import { setUsers, selectListOfUsers } from './listOfUsersSlice'
 
 import { ListOfUsers } from './ListOfUsers';
+import socket from '../../socket';
 
 export const ActiveUsers = () => {
   const users = useSelector(selectListOfUsers)
   const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(fetchUsers())
-  }, [dispatch])
+  socket.on('users', users => {
+    dispatch(setUsers(users))
+  })
 
   return (
     <div className='users'>
