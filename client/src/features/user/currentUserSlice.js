@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import { history } from '../../history'
 import { callRegisterUser, callLoginUser } from '../../api'
+import socket from '../../socket'
 
 const initialState = {
   currentUser: {},
@@ -17,6 +18,7 @@ export const registerUser = createAsyncThunk('user/registerUser', async (data) =
 
 export const loginUser = createAsyncThunk('user/loginUser', async (data) => {
   const response = await callLoginUser(data)
+  socket.connect()
   history.push('/chat')
   return response
 })
