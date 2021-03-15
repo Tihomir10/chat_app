@@ -18,8 +18,24 @@ app.use(function(req, res, next) {
   next();
 });
 
-io.on('connection', () => {
-  console.log('connected to socket')
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  socket.username = username;
+  next();
+});
+
+io.on('connection', (socket) => {
+  const users = []
+  for (let [id, socket] of io.of('/').sockets) {
+    users.push({
+      id: id,
+      name: socket.username
+    })
+  }
+  socket.emit('users', users)
 })
 
 app.use('/api', indexRouter)
