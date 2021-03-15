@@ -18,6 +18,10 @@ app.use(function(req, res, next) {
   next();
 });
 
+io.on('connection', () => {
+  console.log('connected to socket')
+})
+
 app.use('/api', indexRouter)
 
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -28,4 +32,4 @@ db.once('open', function() {
   console.log('connected to mongodb')
 });
 
-app.listen(PORT, console.log(`Listening on port: ${PORT}`))
+server.listen(PORT, console.log(`Listening on port: ${PORT}`))
