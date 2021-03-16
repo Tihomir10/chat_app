@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const PORT = process.env.PORT || 4001;
 
 const indexRouter = require('./routes/index')
+const socketConnection = require('./socket')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -18,25 +19,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  if (!username) {
-    return next(new Error("invalid username"));
-  }
-  socket.username = username;
-  next();
-});
-
-io.on('connection', (socket) => {
-  const users = []
-  for (let [id, socket] of io.of('/').sockets) {
-    users.push({
-      id: id,
-      name: socket.username
-    })
-  }
-  io.emit('users', users)
-})
+socketConnection(io)
 
 app.use('/api', indexRouter)
 
