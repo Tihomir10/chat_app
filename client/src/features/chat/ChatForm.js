@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-export const ChatForm = () => {
+import { sendMessage } from './chatSlice'
+
+export const ChatForm = ({ id }) => {
+  const dispatch = useDispatch()
   const [message, setMessage] = useState('')
 
   const onMessageChanged = e => setMessage(e.target.value)
+
+  const onSubmitButtonClicked = (event) => {
+    event.preventDefault()
+    dispatch(sendMessage({id, message}))
+  } 
 
   return (
     <form className='messaging-form' onSubmit={onSubmitButtonClicked}>
