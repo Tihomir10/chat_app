@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { registerUser } from './currentUserSlice'
+import socket from '../../socket'
 
 export const RegistrationForm = () => {
   const dispatch = useDispatch()
@@ -19,6 +20,7 @@ export const RegistrationForm = () => {
   const onRegisterButtonClicked = () => {
     if (username && password && passwordConfirmation) {
       dispatch(registerUser({username, password}))
+      socket.auth = { username }
       setUsername('')
       setPassword('')
       setPasswordConfiramtion('')
@@ -51,7 +53,7 @@ export const RegistrationForm = () => {
       />
       <div className='err-msg'>{errorMsg}</div>
       <button type="submit" className="btn btn-primary" onClick={onRegisterButtonClicked} disabled={!canRegister}>Submit</button>
-      <div><Link to='/login'>Already have an account?</Link></div>
+      <div><Link to='/'>Already have an account?</Link></div>
     </form>
   )
 }
