@@ -32,6 +32,7 @@ const socketConnection = (io) => {
     socket.on('private message', ({ id, message }) => {
       socket.to(id).emit('private message', {
         from: socket.id,
+        senderName: socket.username,
         message
       })
     })
