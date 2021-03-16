@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import socket from '../../socket'
 import { loginUser } from './currentUserSlice'
@@ -47,6 +48,7 @@ export const LoginForm = () => {
       </div>
       <div className='err-msg'>{errorMsg}</div>
       <button type="submit"  className="btn btn-primary" onClick={onLoginButtonClicked} disabled={!canLogin} >Login</button>
+      <div><Link to='/register'>Don't have an account?</Link></div>
     </form>
   )
 }
