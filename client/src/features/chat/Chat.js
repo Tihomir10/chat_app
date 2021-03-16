@@ -30,7 +30,7 @@ export const Chat = ({ match }) => {
     <div className='chats'>
       <Link to='/chat'>Back to Chat</Link>
       <h4>Talking to {chatBuddy.name}</h4>
-      <ChatForm />
+      <ChatForm id={id} />
       <ChatHistory />      
     </div>
   )
