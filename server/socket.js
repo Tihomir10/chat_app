@@ -33,7 +33,7 @@ const socketConnection = (io) => {
       socket.to(id).emit('private message', {
         from: socket.id,
         senderName: socket.username,
-        message
+        messages: [message]
       })
     })
   })
