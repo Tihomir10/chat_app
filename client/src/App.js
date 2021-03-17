@@ -17,10 +17,9 @@ function App() {
   return (
     <Router history={history}>
       <Switch>
-        <Route exact path='/' component={RegistrationForm}/>
-        <Route exact path='/login' component={LoginForm}/>
-        <Route exact path='/chat' component={ActiveUsers} />
-        <Route exact path='/chat/:id' component={Chat} />
+        <Route exact path='/register' component={RegistrationForm}/>
+        <Route exact path='/' component={LoginForm}/>
+        <Route exact path={['/chat', '/chat/:id']} component={Chat} />
       </Switch>
     </Router>
   )
