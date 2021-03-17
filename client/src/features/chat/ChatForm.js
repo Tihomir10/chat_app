@@ -12,6 +12,7 @@ export const ChatForm = ({ id }) => {
   const onSubmitButtonClicked = (event) => {
     event.preventDefault()
     dispatch(sendMessage({id, message}))
+    setMessage('')
   } 
 
   return (
