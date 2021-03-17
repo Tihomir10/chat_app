@@ -12,6 +12,7 @@ const initialState = {
 
 export const registerUser = createAsyncThunk('user/registerUser', async (data) => {
   const response = await callRegisterUser(data)
+  socket.connect()
   history.push('/chat')
   return response
 })
