@@ -29,11 +29,11 @@ const socketConnection = (io) => {
       io.emit('users', users)
     })
 
-    socket.on('private message', ({ id, message }) => {
+    socket.on('private message', ({ chatName, id, messages }) => {
       socket.to(id).emit('private message', {
+        chatName,
         from: socket.id,
-        senderName: socket.username,
-        messages: [message]
+        messages
       })
     })
   })
