@@ -1,17 +1,16 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import { selectChatById } from './chatSlice'
+import { selectChatByChatName } from './chatSlice'
 
-export const ChatHistory = ({ id }) => {
-  const chat = useSelector(state => selectChatById(state, id))
-
+export const ChatHistory = ({ chatName }) => {
+  const chat = useSelector(state => selectChatByChatName(state, chatName))
   if (chat) {
     return (
       <ul>
         {chat.messages.map((msg, index) => {
           return(
-            <li key={index}>{chat.senderName}: {msg}</li>
+            <li key={index}>{msg.senderName}: {msg.message}</li>
           )
         })}
       </ul>
