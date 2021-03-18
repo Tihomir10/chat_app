@@ -3,7 +3,7 @@ import socket from '../../socket'
 
 const initialState = {
   chats: [],
-  chatBuddy: {},
+  chatBuddy: null,
   listOfUsers: [],
   status: 'idle',
   errorMsg: null
@@ -17,12 +17,20 @@ const chatSlice = createSlice({
       state.chatBuddy = action.payload
     },
     sendMessage(state, action) {
-      const { id, message } = action.payload
-      socket.emit('private message', {id, message})
+      const { chatName, id, messages } = action.payload
+      socket.emit('private message', {chatName, id, messages})
+      for(var i = 0; i < state.chats.length; i++) {
+        if (state.chats[i].chatName == chatName) {
+          state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
+          return;
+        }
+      }
+      state.chats.push(action.payload)
     },
     receiveMessage(state, action) {
+      console.log(action.payload)
       for(var i = 0; i < state.chats.length; i++) {
-        if (state.chats[i].senderName == action.payload.senderName) {
+        if (state.chats[i].chatName == action.payload.chatName) {
           state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
           return;
         }
@@ -39,10 +47,12 @@ export const { selectedChatBuddy, sendMessage, receiveMessage, setUsers } = chat
 
 export const selectListOfUsers = state => state.chat.listOfUsers
 
+export const selectChatBuddy = state => state.chat.chatBuddy
+
 export const selectUserById = (state, id) => 
   state.chat.listOfUsers.find(user => user.id === id)
 
-export const selectChatById = (state, id) =>
-  state.chat.chats.find(chat => chat.from === id)
+export const selectChatByChatName = (state, chatName) =>
+  state.chat.chats.find(chat => chat.chatName === chatName)
 
 export default chatSlice.reducer
