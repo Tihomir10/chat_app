@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
 
-import { selectedChatBuddy, receiveMessage, selectUserById, setUsers, selectListOfUsers, selectChatById } from './chatSlice'
+import { selectedChatBuddy, receiveMessage, selectUserById, setUsers, selectListOfUsers } from './chatSlice'
 import socket from '../../socket'
 
 import { ChatForm } from './ChatForm'
@@ -16,9 +16,8 @@ export const Chat = ({ match }) => {
 
   const users = useSelector(selectListOfUsers) 
   const chatBuddy = useSelector(state => selectUserById(state, id))
-
-  
   const currentUser = useSelector(state => state.user.currentUser)
+
   let chatName
 
   if (chatBuddy) {
@@ -34,27 +33,27 @@ export const Chat = ({ match }) => {
     socket.on('private message', content => {
       dispatch(receiveMessage(content))
     })
-  }, [])
+  }, [dispatch])
 
     
   if (id && !chatBuddy) {
     history.push('/')
   }
 
-  if (!chatBuddy) {
+  if (chatBuddy) {
     return (
-      <div className='users'>
-        <ActiveUsers users={users} />
+      <div className='chats'>
+        <Link to='/chat'>Back to Chat</Link>
+        <h4>Talking to {chatBuddy.name}</h4>
+        <ChatForm id={id} chatName={chatName} senderName={currentUser.name} />
+        <ChatHistory id={id} chatName={chatName} chatBuddy={chatBuddy} />      
       </div>
     )
   }
 
   return (
-    <div className='chats'>
-      <Link to='/chat'>Back to Chat</Link>
-      <h4>Talking to {chatBuddy.name}</h4>
-      <ChatForm id={id} chatName={chatName} senderName={currentUser.name} />
-      <ChatHistory id={id} chatName={chatName} />      
+    <div className='users'>
+      <ActiveUsers users={users} />
     </div>
   )
 }
