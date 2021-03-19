@@ -1,10 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { selectChatByChatName } from './chatSlice'
+import { selectChatByChatName, setReadMessage } from './chatSlice'
 
-export const ChatHistory = ({ chatName }) => {
+export const ChatHistory = ({ chatName, chatBuddy }) => {
+  const dispatch = useDispatch()
   const chat = useSelector(state => selectChatByChatName(state, chatName))
+  
+  useEffect(() => {
+    dispatch(setReadMessage(chatBuddy))
+  }, [chatBuddy, dispatch])
+
   if (chat) {
     return (
       <ul>
