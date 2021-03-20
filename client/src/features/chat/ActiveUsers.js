@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom'
 
-import { setUsers, selectListOfUsers } from '../listOfUsers/listOfUsersSlice'
-
-import socket from '../../socket';
-
 export const ActiveUsers = ({ users }) => {
 
   const renderedUsers = users.map(user => {
+    let indicator 
+    if (user.newMessages) {
+      indicator = <div id='indicator'></div>
+    }
     return (
       <li key={user.id}>
-        <Link to={`/chat/${user.id}`}>{user.name}</Link>
+        <Link to={`/chat/${user.id}`}>
+          <span>{user.name}</span> 
+          {indicator}
+        </Link>
       </li>
     )
   })
