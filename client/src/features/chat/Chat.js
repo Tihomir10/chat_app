@@ -18,10 +18,10 @@ export const Chat = ({ match }) => {
   const chatBuddy = useSelector(state => selectUserById(state, id))
   const currentUser = useSelector(state => state.user.currentUser)
 
-  let chatName
+  dispatch(selectedChatBuddy(chatBuddy))
 
+  let chatName
   if (chatBuddy) {
-    dispatch(selectedChatBuddy(chatBuddy))
     chatName = (currentUser.name + chatBuddy.name).split('').sort().join('')
   }
 
