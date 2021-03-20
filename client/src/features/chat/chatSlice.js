@@ -28,17 +28,17 @@ const chatSlice = createSlice({
       state.chats.push(action.payload)
     },
     receiveMessage(state, action) {
-      for(var i = 0; i < state.chats.length; i++) {
-        if (state.chats[i].chatName === action.payload.chatName) {
-          state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
-          return;
-        }
-      }
       if (!state.chatBuddy || (state.chatBuddy.name !== action.payload.messages[0].senderName)) {
         for (var j = 0; j < state.listOfUsers.length; j++) {
           if (state.listOfUsers[j].name === action.payload.messages[0].senderName) {
             state.listOfUsers[j].newMessages = true
           }
+        }
+      }
+      for(var i = 0; i < state.chats.length; i++) {
+        if (state.chats[i].chatName === action.payload.chatName) {
+          state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
+          return;
         }
       }
       state.chats.push(action.payload)
