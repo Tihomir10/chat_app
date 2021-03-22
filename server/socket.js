@@ -29,9 +29,10 @@ const socketConnection = (io) => {
       io.emit('users', users)
     })
 
-    socket.on('private message', ({ chatName, id, messages }) => {
+    socket.on('private message', ({ chatName, id, chatBuddy, messages }) => {
       io.to(id).to(socket.id).emit('private message', {
         chatName,    
+        chatBuddy,
         messages
       })
     })
