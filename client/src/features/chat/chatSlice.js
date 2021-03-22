@@ -19,31 +19,33 @@ const chatSlice = createSlice({
     sendMessage(state, action) {
       const { chatName, id, messages } = action.payload
       socket.emit('private message', {chatName, id, messages})
-      for(var i = 0; i < state.chats.length; i++) {
-        if (state.chats[i].chatName === chatName) {
-          state.chats[i].messages = state.chats[i].messages.concat(messages[0])
-          return;
-        }
-      }
-      state.chats.push(action.payload)
     },
     receiveMessage(state, action) {
-      const { chatName, messages } = action.payload
+      if (Object.keys(action.payload.currentUser).length < 1) {
+        return
+      }
+      
+      const { content, currentUser } = action.payload
+      const { chatName, messages} = content
       const { senderName } = messages[0]
-      if (!state.chatBuddy || (state.chatBuddy.name !== senderName)) {
+
+      if ((!state.chatBuddy && currentUser.name !== senderName) || (state.chatBuddy.name !== senderName)) {
         for (var j = 0; j < state.listOfUsers.length; j++) {
           if (state.listOfUsers[j].name === senderName) {
             state.listOfUsers[j].newMessages = true
           }
         }
       }
-      for(var i = 0; i < state.chats.length; i++) {
-        if (state.chats[i].chatName === chatName) {
-          state.chats[i].messages = state.chats[i].messages.concat(messages[0])
-          return;
-        }
-      }
-      state.chats.push(action.payload)
+
+      const chat = state.chats.find(chat => {
+        return chat.chatName === chatName
+      })
+      if(chat) {
+        chat.messages.push(messages[0])
+        return
+      } 
+
+      state.chats.push(action.payload.content)
     },
     setUsers(state, action) {
       state.listOfUsers = action.payload
