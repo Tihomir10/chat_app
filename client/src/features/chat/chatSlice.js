@@ -21,23 +21,25 @@ const chatSlice = createSlice({
       socket.emit('private message', {chatName, id, messages})
       for(var i = 0; i < state.chats.length; i++) {
         if (state.chats[i].chatName === chatName) {
-          state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
+          state.chats[i].messages = state.chats[i].messages.concat(messages[0])
           return;
         }
       }
       state.chats.push(action.payload)
     },
     receiveMessage(state, action) {
-      if (!state.chatBuddy || (state.chatBuddy.name !== action.payload.messages[0].senderName)) {
+      const { chatName, messages } = action.payload
+      const { senderName } = messages[0]
+      if (!state.chatBuddy || (state.chatBuddy.name !== senderName)) {
         for (var j = 0; j < state.listOfUsers.length; j++) {
-          if (state.listOfUsers[j].name === action.payload.messages[0].senderName) {
+          if (state.listOfUsers[j].name === senderName) {
             state.listOfUsers[j].newMessages = true
           }
         }
       }
       for(var i = 0; i < state.chats.length; i++) {
-        if (state.chats[i].chatName === action.payload.chatName) {
-          state.chats[i].messages = state.chats[i].messages.concat(action.payload.messages[0])
+        if (state.chats[i].chatName === chatName) {
+          state.chats[i].messages = state.chats[i].messages.concat(messages[0])
           return;
         }
       }
