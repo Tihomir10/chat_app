@@ -29,11 +29,11 @@ export const Chat = ({ match }) => {
     socket.on('users', users => {
       dispatch(setUsers(users))
     })
-
+    
     socket.on('private message', content => {
-      dispatch(receiveMessage(content))
+      dispatch(receiveMessage({content, currentUser}))
     })
-  }, [dispatch])
+  }, [dispatch, currentUser])
 
     
   if (id && !chatBuddy) {
@@ -45,8 +45,17 @@ export const Chat = ({ match }) => {
       <div className='chats'>
         <Link to='/chat'>Back to Chat</Link>
         <h4>Talking to {chatBuddy.name}</h4>
-        <ChatForm id={id} chatName={chatName} senderName={currentUser.name} />
-        <ChatHistory id={id} chatName={chatName} chatBuddy={chatBuddy} />      
+        <ChatForm 
+          id={id} 
+          chatName={chatName}   
+          chatBuddy={chatBuddy.name}
+          senderName={currentUser.name}
+        />
+        <ChatHistory 
+          id={id}   
+          chatName={chatName} 
+          chatBuddy={chatBuddy} 
+        />      
       </div>
     )
   }
