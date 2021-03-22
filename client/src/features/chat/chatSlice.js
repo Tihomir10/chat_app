@@ -24,23 +24,23 @@ const chatSlice = createSlice({
       if (Object.keys(action.payload.currentUser).length < 1) {
         return
       }
-      
+
       const { content, currentUser } = action.payload
-      const { chatName, messages} = content
+      const { chatName, messages, chatBuddy } = content
       const { senderName } = messages[0]
 
-      if ((!state.chatBuddy && currentUser.name !== senderName) || (state.chatBuddy.name !== senderName)) {
-        for (var j = 0; j < state.listOfUsers.length; j++) {
-          if (state.listOfUsers[j].name === senderName) {
-            state.listOfUsers[j].newMessages = true
-          }
-        }
+      if (!state.chatBuddy || (currentUser.name === chatBuddy)) {
+        const user = state.listOfUsers.find(user => {
+          return user.name === senderName
+        })
+        user.newMessages = true
       }
 
       const chat = state.chats.find(chat => {
         return chat.chatName === chatName
       })
-      if(chat) {
+
+      if (chat) {
         chat.messages.push(messages[0])
         return
       } 
@@ -51,11 +51,10 @@ const chatSlice = createSlice({
       state.listOfUsers = action.payload
     }, 
     setReadMessage(state, action) {
-      for (var i = 0; i < state.listOfUsers.length; i++) {
-        if (state.listOfUsers[i].name === action.payload.name) {
-          state.listOfUsers[i].newMessages = false
-        }
-      }
+      const user = state.listOfUsers.find(user => {
+          return user.name === action.payload.name
+        })
+        user.newMessages = false
     }
   }
 })
